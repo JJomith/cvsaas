@@ -13,22 +13,24 @@ datasource db {
 // ==================== USER & AUTH ====================
 
 model User {
-  id             String    @id @default(uuid())
-  email          String    @unique
-  password       String?
-  name           String?
-  image          String?
-  role           UserRole  @default(USER)
-  emailVerified  DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id               String    @id @default(uuid())
+  email            String    @unique
+  password         String?
+  name             String?
+  image            String?
+  role             UserRole  @default(USER)
+  emailVerified    DateTime?
+  stripeCustomerId String?
+  lastLoginAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   // Relations
   profile        Profile?
   credits        UserCredits?
   documents      Document[]
   payments       Payment[]
-  creditUsages   CreditUsage[]
+  creditUsage    CreditUsage[]
   accounts       Account[]
   sessions       Session[]
   passwordResets PasswordReset[]
@@ -311,11 +313,12 @@ model CreditPack {
 }
 
 model CreditUsage {
-  id         String       @id @default(uuid())
-  userId     String
-  credits    Float
-  action     CreditAction
+  id        String   @id @default(uuid())
+  userId    String
+  credits   Float
+  action    String
   documentId String?
+  description String?
   metadata   Json?
   createdAt  DateTime     @default(now())
 
@@ -324,38 +327,20 @@ model CreditUsage {
   @@map("credit_usages")
 }
 
-enum CreditAction {
-  CV_GENERATION
-  COVER_LETTER_GENERATION
-  ATS_OPTIMIZATION
-  PURCHASE
-  PROMO_CODE
-  ADMIN_GRANT
-}
+model CreditPack {
+  id            String   @id @default(uuid())
+  name          String
+  credits       Int
+  price         Float
+  currency      String   @default("USD")
+  stripePriceId String?
+  active        Boolean  @default(true)
+  popular       Boolean  @default(false)
+  features      String[]
 
-model Payment {
-  id              String        @id @default(uuid())
-  userId          String
-  amount          Float
-  currency        String        @default("USD")
-  status          PaymentStatus @default(PENDING)
-  stripePaymentId String?       @unique
-  stripeSessionId String?       @unique
-  creditPackId    String
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  payments Payment[]
 
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  creditPack CreditPack @relation(fields: [creditPackId], references: [id])
-
-  @@map("payments")
-}
-
-enum PaymentStatus {
-  PENDING
-  COMPLETED
-  FAILED
-  REFUNDED
+  @@map("credit_packs")
 }
 
 model PromoCode {
@@ -369,12 +354,12 @@ model PromoCode {
   active          Boolean   @default(true)
   createdAt       DateTime  @default(now())
 
-  redemptions PromoRedemption[]
+  redemptions PromoCodeUsage[]
 
   @@map("promo_codes")
 }
 
-model PromoRedemption {
+model PromoCodeUsage {
   id          String   @id @default(uuid())
   promoCodeId String
   userId      String
@@ -383,7 +368,54 @@ model PromoRedemption {
   promoCode PromoCode @relation(fields: [promoCodeId], references: [id], onDelete: Cascade)
 
   @@unique([promoCodeId, userId])
-  @@map("promo_redemptions")
+  @@map("promo_code_usages")
+}
+
+model SystemSettings {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  metadata  Json?
+  updatedAt DateTime @updatedAt
+
+  @@map("system_settings")
+}
+
+model EmailLog {
+  id        String   @id @default(uuid())
+  to        String
+  subject   String
+  status    String
+  messageId String?
+  error     String?
+  createdAt DateTime @default(now())
+
+  @@map("email_logs")
+}
+
+model Payment {
+  id             String    @id @default(uuid())
+  userId         String
+  amount         Float
+  currency       String        @default("USD")
+  status         PaymentStatus @default(PENDING)
+  stripePaymentId String?       @unique
+  stripeSessionId String?       @unique
+  creditPackId    String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  creditPack CreditPack? @relation(fields: [creditPackId], references: [id])
+
+  @@map("payments")
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
 }
 
 // ==================== AI PROVIDERS ====================
