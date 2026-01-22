@@ -4,10 +4,9 @@ import {
   getUsers,
   getUser,
   updateUser,
-  deleteUser,
+  grantCredits,
   getAIProviders,
   updateAIProvider,
-  getAdminTemplates,
   createTemplate,
   updateTemplate,
   deleteTemplate,
@@ -15,8 +14,8 @@ import {
   createPromoCode,
   updatePromoCode,
   deletePromoCode,
-  getSystemSettings,
-  updateSystemSettings,
+  getSystemConfig,
+  updateSystemConfig,
 } from '../controllers/admin.controller';
 import { authenticate, requireAdmin } from '../middleware';
 
@@ -33,14 +32,13 @@ router.get('/dashboard', getDashboardStats);
 router.get('/users', getUsers);
 router.get('/users/:id', getUser);
 router.put('/users/:id', updateUser);
-router.delete('/users/:id', deleteUser);
+router.post('/users/:id/credits', grantCredits);
 
 // AI Providers
 router.get('/ai-providers', getAIProviders);
 router.put('/ai-providers/:id', updateAIProvider);
 
 // Templates
-router.get('/templates', getAdminTemplates);
 router.post('/templates', createTemplate);
 router.put('/templates/:id', updateTemplate);
 router.delete('/templates/:id', deleteTemplate);
@@ -52,7 +50,7 @@ router.put('/promo-codes/:id', updatePromoCode);
 router.delete('/promo-codes/:id', deletePromoCode);
 
 // System Settings
-router.get('/settings', getSystemSettings);
-router.put('/settings', updateSystemSettings);
+router.get('/settings', getSystemConfig);
+router.put('/settings', updateSystemConfig);
 
 export default router;

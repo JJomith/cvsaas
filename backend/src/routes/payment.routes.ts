@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import {
-  getCreditBalance,
-  getCreditHistory,
-  createCheckoutSession,
+  getCredits,
+  getPaymentHistory,
+  createCheckout,
   handleWebhook,
-  applyPromoCode,
+  redeemPromoCode,
+  getCreditPacks,
 } from '../controllers/payment.controller';
 import { authenticate } from '../middleware';
 import express from 'express';
@@ -15,9 +16,10 @@ const router = Router();
 router.post('/webhook', express.raw({ type: 'application/json' }), handleWebhook);
 
 // Protected routes
-router.get('/credits', authenticate, getCreditBalance);
-router.get('/credits/history', authenticate, getCreditHistory);
-router.post('/checkout', authenticate, createCheckoutSession);
-router.post('/promo-code', authenticate, applyPromoCode);
+router.get('/credits', authenticate, getCredits);
+router.get('/credits/history', authenticate, getPaymentHistory);
+router.get('/credit-packs', getCreditPacks);
+router.post('/checkout', authenticate, createCheckout);
+router.post('/promo-code', authenticate, redeemPromoCode);
 
 export default router;

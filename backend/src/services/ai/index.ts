@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import prisma from '../config/database';
+import prisma from '../../config/database';
 import { AIProviderType } from '@prisma/client';
 
 export interface AIGenerationParams {

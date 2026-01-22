@@ -7,13 +7,12 @@ import {
   updateDocument,
   deleteDocument,
   downloadPDF,
-  getDocumentVersions,
+  getVersions,
   restoreVersion,
-  optimizeForATS,
-  getTemplates,
+  optimizeATS,
 } from '../controllers/document.controller';
 import { authenticate, validate } from '../middleware';
-import { generateCVSchema, generateCoverLetterSchema } from '../../shared/src/validations';
+import { generateCVSchema, generateCoverLetterSchema } from '../validations';
 
 const router = Router();
 
@@ -22,7 +21,6 @@ router.use(authenticate);
 
 // Documents
 router.get('/', getDocuments);
-router.get('/templates', getTemplates);
 router.get('/:id', getDocument);
 router.post('/cv', validate(generateCVSchema), generateCV);
 router.post('/cover-letter', validate(generateCoverLetterSchema), generateCoverLetter);
@@ -33,10 +31,10 @@ router.delete('/:id', deleteDocument);
 router.get('/:id/download', downloadPDF);
 
 // Versions
-router.get('/:id/versions', getDocumentVersions);
+router.get('/:id/versions', getVersions);
 router.post('/:id/versions/:versionId/restore', restoreVersion);
 
 // ATS optimization
-router.post('/:id/optimize-ats', optimizeForATS);
+router.post('/:id/optimize-ats', optimizeATS);
 
 export default router;

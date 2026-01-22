@@ -19,7 +19,7 @@ import {
   deleteCertification,
 } from '../controllers/profile.controller';
 import { authenticate, validate } from '../middleware';
-import { profileSchema, experienceSchema, educationSchema, skillSchema, projectSchema, certificationSchema } from '../../shared/src/validations';
+import { profileSchema, experienceSchema, educationSchema, skillSchema, projectSchema, certificationSchema } from '../validations';
 
 const router = Router();
 

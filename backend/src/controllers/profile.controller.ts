@@ -101,6 +101,21 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// Import from LinkedIn (placeholder - needs LinkedIn OAuth)
+export const importFromLinkedIn = async (req: AuthRequest, res: Response) => {
+  try {
+    // This endpoint requires LinkedIn OAuth setup
+    // For now, return a message indicating the feature needs configuration
+    res.status(501).json({ 
+      error: 'LinkedIn import not configured',
+      message: 'LinkedIn OAuth credentials need to be set up to enable this feature.'
+    });
+  } catch (error) {
+    console.error('Import from LinkedIn error:', error);
+    res.status(500).json({ error: 'Failed to import from LinkedIn' });
+  }
+};
+
 // Add experience
 export const addExperience = async (req: AuthRequest, res: Response) => {
   try {
@@ -513,6 +528,32 @@ export const addCertification = async (req: AuthRequest, res: Response) => {
   } catch (error) {
     console.error('Add certification error:', error);
     res.status(500).json({ error: 'Failed to add certification' });
+  }
+};
+
+// Update certification
+export const updateCertification = async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const certification = await prisma.certification.findUnique({
+      where: { id },
+      include: { profile: true },
+    });
+
+    if (!certification || certification.profile.userId !== req.user!.id) {
+      return res.status(404).json({ error: 'Certification not found' });
+    }
+
+    const updated = await prisma.certification.update({
+      where: { id },
+      data: req.body,
+    });
+
+    res.json({ certification: updated });
+  } catch (error) {
+    console.error('Update certification error:', error);
+    res.status(500).json({ error: 'Failed to update certification' });
   }
 };
 

@@ -298,14 +298,15 @@ model UserCredits {
 }
 
 model CreditPack {
-  id       String   @id @default(uuid())
-  name     String
-  credits  Int
-  price    Float
-  currency String   @default("USD")
-  active   Boolean  @default(true)
-  popular  Boolean  @default(false)
-  features String[]
+  id            String   @id @default(uuid())
+  name          String
+  credits       Int
+  price         Float
+  currency      String   @default("USD")
+  stripePriceId String?
+  active        Boolean  @default(true)
+  popular       Boolean  @default(false)
+  features      String[]
 
   payments Payment[]
 
@@ -325,22 +326,6 @@ model CreditUsage {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("credit_usages")
-}
-
-model CreditPack {
-  id            String   @id @default(uuid())
-  name          String
-  credits       Int
-  price         Float
-  currency      String   @default("USD")
-  stripePriceId String?
-  active        Boolean  @default(true)
-  popular       Boolean  @default(false)
-  features      String[]
-
-  payments Payment[]
-
-  @@map("credit_packs")
 }
 
 model PromoCode {

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { scrapeJob, parseJobDescription } from '../controllers/job.controller';
+import { scrapeJobUrl, parseJobDescription } from '../controllers/job.controller';
 import { authenticate } from '../middleware';
 
 const router = Router();
@@ -8,7 +8,7 @@ const router = Router();
 router.use(authenticate);
 
 // Job scraping
-router.post('/scrape', scrapeJob);
+router.post('/scrape', scrapeJobUrl);
 router.post('/parse', parseJobDescription);
 
 export default router;

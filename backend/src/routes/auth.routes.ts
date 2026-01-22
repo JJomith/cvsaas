@@ -9,7 +9,7 @@ import {
   changePassword,
 } from '../controllers/auth.controller';
 import { authenticate, validate } from '../middleware';
-import { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from '../../shared/src/validations';
+import { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from '../validations';
 
 const router = Router();
 
